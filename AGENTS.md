@@ -217,6 +217,7 @@ Use patterns deliberately and **name them** in the PR description/Javadoc. Good 
   Adds boundary tests at 19% and 20%. Level read from telemetry state.
 
   Jira: KAN-42
+  KAN-42 #in-progress
   ```
 
 - PR: link story, list rules/tests covered, how verified, fill the PR template (includes the AI findings table, section 8). Draft PR until CI is green. Show the PR text to the human before opening (1.1).
