@@ -66,7 +66,7 @@ Status legend: items marked **[TBD]** are not decided yet. Do not invent a value
 | Tests                 | JUnit 5, Mockito, AssertJ, Cucumber (BDD), Testcontainers, k6 (load)                |
 | Quality               | SonarQube/SonarCloud + JaCoCo, quality gate on new code **[TBD thresholds]**        |
 | Management            | Jira + Xray; story key in branch, commits and PRs                                   |
-| CI/CD                 | GitHub Actions (`.github/workflows/`)                                               |
+| CI/CD                 | GitHub Actions (`.github/workflows/`), use  `runs-on: [self-hosted, raspberry]` to use the project's personal runners (running in a Raspberry Pi)                                            |
 | Language              | Code, comments, commits, docs: English. Do not mix languages in a document          |
 | Dev OS                | Windows 11 (PowerShell / Git Bash). Use cross-platform commands in docs and scripts |
 
