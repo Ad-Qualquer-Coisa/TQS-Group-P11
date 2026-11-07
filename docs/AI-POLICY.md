@@ -78,4 +78,4 @@ First time: discuss at team checkpoint, fix, update log. Repeated or concealment
 | Miguel Neto     |                 |
 | Diogo Silva     |                 |
 | Fernando Santos | 07/11/2026      |
-| Bernardo Reis   |                 |
+| Bernardo Reis   | 07/11/2026      |
