@@ -203,6 +203,11 @@ Use patterns deliberately and **name them** in the PR description/Javadoc. Good 
   - Title: `type: imperative summary` (≤72 chars, no period). Types: `feat`, `fix`, `test`, `refactor`, `style`, `docs`, `build`, `ci`, `perf`, `chore`.
   - Body: what changed and **why**, rules/tests touched, caveats. Wrap ~72 cols.
   - Jira key: in the branch name and in the body footer (`Jira: KAN-42`) so Jira's dev panel links it.
+  - **Jira smart commits.** When proposing a commit message, advise the user to add the smart-commit command to the footer, so the Jira issue moves on its own:
+    - first commit of the branch: `KAN-42 #in-progress`;
+    - final commit, or the squash-merge message: `KAN-42 #done`, so the issue only closes when the PR is merged into `main`.
+    - Never use `#done` on intermediate commits. Smart commits only work if the committer's `git config user.email` matches their Jira account email.
+    - **If you notice the user did not follow these rules, warn them.** For example: a branch, commit or PR without the Jira key; `#done` on an intermediate commit; no `#in-progress` on the first commit; a squash-merge message without `#done`; a committer email that does not match Jira. Say what is wrong and suggest the fix (e.g. amend the last commit, edit the squash message), but do not rewrite history or push without asking (1.1).
   - Small, logical commits; test-first commits as `test:` followed by `feat:`/`fix:`. **No AI trailers.**
 
   ```
