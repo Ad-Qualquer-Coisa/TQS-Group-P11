@@ -198,11 +198,11 @@ Use patterns deliberately and **name them** in the PR description/Javadoc. Good 
 ## 6. Git workflow (for reference; remember 1.1 — ask before doing)
 
 - GitHub flow: one **feature branch per story**, protected `main`, merge **only via PR** with at least one human approval.
-- Branch: `<JIRA-KEY>-short-kebab-description` (e.g. `TQS-42-book-vehicle`). **[confirm Jira project key]**
+- Branch: `<JIRA-KEY>-short-kebab-description` (e.g. `KAN-42-book-vehicle`). Jira project key: `KAN`.
 - Commit format (Conventional Commits): **one-line title, blank line, longer description.**
   - Title: `type: imperative summary` (≤72 chars, no period). Types: `feat`, `fix`, `test`, `refactor`, `style`, `docs`, `build`, `ci`, `perf`, `chore`.
   - Body: what changed and **why**, rules/tests touched, caveats. Wrap ~72 cols.
-  - Jira key: in the branch name and in the body footer (`Jira: TQS-42`) so Jira's dev panel links it **[confirm placement and project key]**.
+  - Jira key: in the branch name and in the body footer (`Jira: KAN-42`) so Jira's dev panel links it.
   - Small, logical commits; test-first commits as `test:` followed by `feat:`/`fix:`. **No AI trailers.**
 
   ```
@@ -211,7 +211,7 @@ Use patterns deliberately and **name them** in the PR description/Javadoc. Good 
   BR1: a vehicle can be booked only if available and battery >= 20%.
   Adds boundary tests at 19% and 20%. Level read from telemetry state.
 
-  Jira: TQS-42
+  Jira: KAN-42
   ```
 
 - PR: link story, list rules/tests covered, how verified, fill the PR template (includes the AI findings table, section 8). Draft PR until CI is green. Show the PR text to the human before opening (1.1).

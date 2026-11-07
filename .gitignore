@@ -35,3 +35,6 @@ application-local.properties
 coverage/
 playwright-report/
 test-results/
+
+# Word lock files
+~$*
