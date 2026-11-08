@@ -68,7 +68,14 @@ Status legend: items marked **[TBD]** are not decided yet. Do not invent a value
 | Management            | Jira + Xray; story key in branch, commits and PRs                                   |
 | CI/CD                 | GitHub Actions (`.github/workflows/`)                                               |
 | Language              | Code, comments, commits, docs: English. Do not mix languages in a document          |
-| Dev OS                | Windows 11 (PowerShell / Git Bash). Use cross-platform commands in docs and scripts |
+| Dev OS                | Windows 11 and Linux (the team uses both). Write cross-platform commands, scripts and paths |
+
+Cross-platform rules (Windows and Linux):
+
+- Shell scripts are Bash (LF endings, committed executable with `git update-index --chmod=+x`); never PowerShell-only or `.bat`-only. `mvnw.cmd` stays for Windows.
+- `.gitattributes` forces LF line endings; never commit CRLF.
+- Paths use forward slashes, and file names are case-sensitive: match the exact case, no spaces in new names.
+- Commands in docs and CI examples use `./mvnw`; nothing may depend on an OS-specific tool. Docker and Testcontainers must work on both.
 
 ### Repo layout (proposed shape, confirm in architecture task)
 
