@@ -27,6 +27,8 @@
     <spotless.version>3.11.0</spotless.version>
     <sonar-maven-plugin.version>5.8.0.7211</sonar-maven-plugin.version>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.organization>ad-qualquer-coisa</sonar.organization>
+    <sonar.projectKey>Ad-Qualquer-Coisa_TQS-Group-P11</sonar.projectKey>
   </properties>
 
   <dependencies>
