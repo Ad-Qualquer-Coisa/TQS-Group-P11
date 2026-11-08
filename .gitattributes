@@ -1,0 +1,7 @@
+# Same line endings on Windows and Linux. Shell scripts such as mvnw break with CRLF.
+* text=auto eol=lf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.docx binary
+*.png binary
+*.jpg binary
