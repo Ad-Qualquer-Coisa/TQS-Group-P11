@@ -73,9 +73,4 @@ First time: discuss at team checkpoint, fix, update log. Repeated or concealment
 
 ## 8. Approval
 
-| Member          | Approved (date) |
-| --------------- | --------------- |
-| Miguel Neto     |                 |
-| Diogo Silva     |                 |
-| Fernando Santos | 07/11/2026      |
-| Bernardo Reis   | 07/11/2026      |
+Approval of this policy is recorded by the GitHub approvals of the pull request that merges it (PR #1). Each member approves on GitHub after reading it; the approvers and dates are the PR history.
