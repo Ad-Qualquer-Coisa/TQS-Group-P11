@@ -34,7 +34,7 @@ Roles: Team Coordinator, Product Owner, QA Engineer, DevOps Master. Every member
 | Jira backlog                     | [Click here](https://tqs-group11.atlassian.net/jira/software/projects/KAN/boards/1/backlog) |
 | Related repositories             | [TBD — none yet] |
 | API documentation (OpenAPI/Swagger) | [TBD] |
-| Static analysis dashboard (SonarQube) | [TBD] |
+| Static analysis dashboard (SonarQube) | [Click here](https://sonarcloud.io/project/overview?id=Ad-Qualquer-Coisa_TQS-Group-P11) |
 | Observability dashboard (Grafana)   | [TBD] |
 | Deployed application             | [TBD] |
 | Product Specification report     | [docs/](docs/) |
