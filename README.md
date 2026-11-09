@@ -47,10 +47,25 @@ README.md
 AGENTS.md            agent instructions (AI2)
 .github/             workflows, pull request template
 docs/                reports (PDF), presentation
+docker-compose.yml   whole stack as code: backend, frontend, PostgreSQL
+.env.example         variable names for .env (copy, then set the values)
 proj/backend/        Spring Boot (Java 21) backend
-proj/frontend/       web UI
+proj/frontend/       web UI (React, Vite, TypeScript; nginx in the container)
 proj/simulator/      fleet telemetry simulator (separate container)
 ```
+
+## Running locally
+
+Requires Docker with Docker Compose. Nothing else (no local Java, Maven or Node).
+
+```bash
+cp .env.example .env          # then edit .env and set your own password
+docker compose up --build     # backend, frontend and PostgreSQL
+```
+
+Open http://localhost (or the `FRONTEND_PORT` set in `.env`). The page shows `Backend status: UP` when the
+frontend reaches the backend and the backend reaches the database. `docker compose down` stops the
+stack and keeps the data; `docker compose down -v` also deletes the database volume.
 
 ## Contributing
 
