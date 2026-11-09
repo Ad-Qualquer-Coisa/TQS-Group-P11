@@ -1,6 +1,6 @@
 # Architecture notebook (draft)
 
-Sections 4.1 and 4.3 of the Product Specification report. Diagrams are Mermaid, versioned in this file.
+Sections 4.1, 4.3 and 4.4 of the Product Specification report. Diagrams are Mermaid, versioned in this file, except the deployment diagram, which is PlantUML in [diagrams/deployment.puml](diagrams/deployment.puml).
 
 ## 4.1 Key requirements and constraints
 
@@ -244,3 +244,41 @@ Persistence calls are omitted for readability; every module stores its own state
 | GBFS feed (low priority) | Reads Fleet through a query port | HTTPS, GBFS v3.0 JSON | Inbound `GbfsFeedAdapter` | Contract test against the official GBFS JSON schema |
 
 **Replacing the simulator.** The core owns the shape of the data (`VehicleReading`) and the port. The adapter is the only code that knows the wire format. To use another simulator, write one adapter that produces `VehicleReading`s; nothing in Fleet or Booking changes, and the core test-suite already runs against a fake adapter that proves this.
+
+## 4.4 Deployment view
+
+**Status: planned.** This section records the configuration the team agreed on before deployment exists. The parts marked **[TBD]** are completed when deployment is in place (iteration I3, continuous delivery).
+
+**Target environment.** Production runs on a **virtual machine provided by the teaching staff** (department VM), reachable by the teaching staff. The whole stack runs there with Docker Compose, from the same `docker-compose.yml` used in development (KAN-20), so the environment is described as code (D3).
+
+The diagram is in [diagrams/deployment.puml](diagrams/deployment.puml). GitHub does not render PlantUML; open it with the PlantUML extension of VS Code or IntelliJ, or export it to SVG.
+
+### Containers
+
+All containers join one private Compose network and reach each other by service name. Only the frontend publishes a port on the VM; the database, broker, simulator, payment gateway and backend are not reachable from outside.
+
+| Container | Technology | Role | Port | Talks to |
+|-----------|------------|------|------|----------|
+| `frontend` | nginx serving the React build | Web UI; forwards `/api` to the backend, so the browser talks to one origin only | 80, published | `backend` (HTTP) |
+| `backend` | Java 21, Spring Boot 4 | REST API and the core (modular monolith, section 4.3) | 8080, internal | `db` (JDBC), `broker` (MQTT), `payment-gateway` (HTTP) |
+| `db` | PostgreSQL | Persistence of every module | 5432, internal | none |
+| `broker` | MQTT broker **[TBD]** | Carries telemetry from the simulator to the backend | 1883, internal | none |
+| `simulator` | Fleet telemetry simulator **[stack TBD]** | Publishes vehicle readings (battery, position, lock state, faults) | none | `broker` (MQTT) |
+| `payment-gateway` | Simulated payment gateway **[stack TBD]** | Charges, authorizes, captures and releases deposits | internal **[TBD]** | none |
+
+The database keeps its data in the named volume `db-data`, so data survives a restart or a rebuild of the containers. Credentials come from a git-ignored `.env` file on each machine; the repository holds only `.env.example` with placeholder values.
+
+### Consistency with the other views
+
+- Each external integration of section 4.3 is one container here: the fleet simulator and the broker (telemetry, MQTT), the simulated payment gateway (HTTP), PostgreSQL (JDBC).
+- The core and its adapters are one deployable unit, the `backend` container, as the modular monolith style requires.
+- Container names, ports and the volume must match `docker-compose.yml` (KAN-20). When one changes, the other changes in the same pull request.
+
+### To be completed when deployment is in place
+
+- [TBD] VM host name or IP address, and whether the frontend is served over HTTPS.
+- [TBD] How `main` reaches the VM (continuous delivery, D4): the deployment job in GitHub Actions and how it connects to the VM.
+- [TBD] Representative data loaded on deployment (D4).
+- [TBD] Staging next to production (D5, valued): for example a second Compose project on the same VM with other ports.
+- [TBD] MQTT broker product, simulator and payment gateway stacks, and image versions.
+- [TBD] Observability containers if adopted (D6, valued: Prometheus and Grafana).

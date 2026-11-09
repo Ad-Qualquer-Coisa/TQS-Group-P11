@@ -1,0 +1,47 @@
+@startuml deployment
+' Deployment view (section 4.4 of the Product Specification report).
+' Planned configuration: the containers match the Docker Compose file (KAN-20).
+' Dashed arrows are not in place yet.
+
+title Deployment view (planned)
+
+skinparam shadowing false
+skinparam defaultTextAlignment center
+
+actor "Web user\n(guest, operator,\nclient manager, admin)" as user
+
+node "GitHub" as github {
+  component "GitHub Actions\nCI: build, tests,\nquality gate" as ci
+}
+
+cloud "SonarCloud\n(static analysis dashboard)" as sonar
+
+node "Department VM (provided by the teaching staff)\nLinux, Docker Engine, Docker Compose" as vm {
+  node "frontend\n<<container>>\nnginx serving the React build" as frontend
+  node "backend\n<<container>>\nJava 21, Spring Boot 4" as backend
+  database "db\n<<container>>\nPostgreSQL" as db
+  storage "db-data\n<<named volume>>" as dbdata
+  node "broker\n<<container>>\nMQTT broker [TBD]" as broker
+  node "simulator\n<<container>>\nfleet telemetry simulator\n[stack TBD]" as simulator
+  node "payment-gateway\n<<container>>\nsimulated payment gateway\n[stack TBD]" as payment
+}
+
+user --> frontend : HTTP :80\n(only published port)
+frontend --> backend : HTTP :8080\nreverse proxy /api
+backend --> db : JDBC :5432
+db -- dbdata
+simulator --> broker : MQTT publish :1883
+backend --> broker : MQTT subscribe :1883
+backend --> payment : HTTP REST
+
+ci ..> sonar : analysis on PRs and main
+ci ..> vm : CD on merge to main [TBD]
+
+legend right
+  Every container joins one private Compose network.
+  Only the frontend publishes a port on the VM.
+  Dashed arrows: not in place yet.
+  [TBD]: decided when the related story starts.
+endlegend
+
+@enduml
