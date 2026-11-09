@@ -1,0 +1,85 @@
+# Build and test on every push and pull request.
+# A part that has no code yet is skipped with a notice, so a green run says nothing about it.
+# Backend also runs mutation testing (pull requests) and SonarCloud analysis with the quality gate
+# (pull requests from this repository, and main). Not here yet: simulator (stack TBD), E2E.
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # SonarCloud needs the full history to find new code and blame
+
+      - name: No backend yet
+        if: hashFiles('proj/backend/pom.xml') == ''
+        run: echo "::notice::proj/backend has no pom.xml yet, backend not built or tested"
+
+      - uses: actions/setup-java@v4
+        if: hashFiles('proj/backend/pom.xml') != ''
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: proj/backend/pom.xml
+
+      # verify runs the unit and integration tests; Testcontainers uses the runner's Docker
+      - name: Build and test
+        if: hashFiles('proj/backend/pom.xml') != ''
+        working-directory: proj/backend
+        run: ./mvnw -B verify
+
+      # Mutation testing is slow, so it runs on pull requests only (and on request with -Pmutation)
+      - name: Mutation testing
+        if: hashFiles('proj/backend/pom.xml') != '' && github.event_name == 'pull_request'
+        working-directory: proj/backend
+        run: ./mvnw -B test-compile pitest:mutationCoverage
+
+      - name: SonarCloud token missing
+        if: hashFiles('proj/backend/pom.xml') != '' && env.SONAR_TOKEN == ''
+        run: echo "::notice::SONAR_TOKEN is not available (secret missing or pull request from a fork), SonarCloud analysis skipped"
+
+      # Reads the JaCoCo report written by verify. Fails the build when the quality gate fails.
+      - name: SonarCloud analysis and quality gate
+        if: >-
+          hashFiles('proj/backend/pom.xml') != '' && env.SONAR_TOKEN != '' &&
+          ((github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+          (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+        working-directory: proj/backend
+        run: ./mvnw -B sonar:sonar -Dsonar.qualitygate.wait=true
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: No frontend yet
+        if: hashFiles('proj/frontend/package.json') == ''
+        run: echo "::notice::proj/frontend has no package.json yet, frontend not built or tested"
+
+      - uses: actions/setup-node@v4
+        if: hashFiles('proj/frontend/package.json') != ''
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: proj/frontend/package-lock.json
+
+      - name: Build and test
+        if: hashFiles('proj/frontend/package.json') != ''
+        working-directory: proj/frontend
+        run: |
+          npm ci
+          npm run lint --if-present
+          npm test --if-present
+          npm run build
